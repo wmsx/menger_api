@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+  menger-api:
+    container_name: sx-menger-api
+    image: menger-api:latest
+    restart: always
+    networks:
+      - sx-net
+networks:
+  sx-net:
+    external: true # 使用自定义创建好的网络，我创建的网络名加sx-net，方便与其他服务通信
