@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/v2/util/log"
 	"github.com/micro/go-micro/v2/web"
+	"github.com/wmsx/menger_api/handler"
 )
 
 const name = "wm.sx.web.menger"
@@ -18,7 +19,7 @@ func main() {
 	}
 
 	router := gin.Default()
-	//mengerHandler := handler.New(svc.Options().Service.Client())
+	mengerHandler := handler.New(svc.Options().Service.Client())
 	r := router.Group("/menger")
 	r.GET("/login", mengerHandler.Login)
 

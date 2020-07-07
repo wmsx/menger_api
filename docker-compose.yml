@@ -1,6 +1,9 @@
 version: "3.7"
 services:
   menger-api:
+    environment:
+      MICRO_REGISTRY: etcd
+      MICRO_REGISTRY_ADDRESS: sx-etcd-node1:2380,sx-etcd-node2:2380,sx-etcd-node3:2380
     container_name: sx-menger-api
     image: menger-api:latest
     restart: always
