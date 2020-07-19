@@ -35,7 +35,7 @@ func NewMengerHandler(client client.Client) *MengerHandler {
 	}
 }
 
-func (m *MengerHandler) Register(c *gin.Context) error {
+func (m *MengerHandler) Register(c *gin.Context) {
 	var (
 		registerRes  *menger.RegisterResponse
 		loginRes     *menger.LoginResponse
@@ -45,7 +45,8 @@ func (m *MengerHandler) Register(c *gin.Context) error {
 
 	if err = c.ShouldBindJSON(&registerInfo); err != nil {
 		log.Error("参数校验失败", err)
-		return mygin.LogicError("参数不完善")
+		c.String(http.StatusBadRequest, "参数不完善")
+		return
 	}
 
 	registerRequest := &menger.RegisterRequest{
@@ -58,10 +59,12 @@ func (m *MengerHandler) Register(c *gin.Context) error {
 	cxt := context.Background()
 	if registerRes, err = m.mengerClient.Register(cxt, registerRequest); err != nil {
 		log.Error("注册失败", err)
-		return mygin.ServerError()
+		c.String(http.StatusInternalServerError, "服务器异常")
+		return
 	}
 	if registerRes.ErrorMsg != nil {
-		return mygin.LogicError(registerRes.ErrorMsg.Msg)
+		c.String(http.StatusBadRequest, registerRes.ErrorMsg.Msg)
+		return
 	}
 
 	log.Info("注册成功", registerRequest)
@@ -75,33 +78,35 @@ func (m *MengerHandler) Register(c *gin.Context) error {
 	loginRes, err = m.mengerClient.Login(cxt, loginReq)
 	if err != nil {
 		log.Error("自动登陆失败 err:", err)
-		return mygin.LogicError("自动登陆失败")
+		c.String(http.StatusUnauthorized, "自动登陆失败")
+		return
 	}
 	if loginRes.ErrorMsg != nil {
 		log.Error("自动登陆失败 errorMsg: ", loginRes.ErrorMsg)
-		return mygin.LogicError("自动登陆失败")
+		c.String(http.StatusUnauthorized, "自动登陆失败")
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"token":      loginRes.Token,
-		"mengerInfo": loginRes.MengerInfo,
-	})
-	return nil
+	c.JSON(http.StatusOK, loginRes.MengerInfo)
+	return
 }
 
-func (m *MengerHandler) Login(c *gin.Context) error {
+func (m *MengerHandler) Login(c *gin.Context) {
 	var (
 		loginRes  *menger.LoginResponse
 		err       error
 		loginInfo *LoginInfo
+		s         *mygin.Session
 	)
 
 	if err = c.ShouldBindJSON(&loginInfo); err != nil {
 		log.Error("参数校验失败", err)
-		return mygin.LogicError("参数不完善")
+		c.String(http.StatusBadRequest, "参数不完善")
+		return
 	}
 	if loginInfo.Name == "" && loginInfo.Email == "" {
-		return mygin.LogicError("邮箱或用户名不能为空")
+		c.String(http.StatusBadRequest, "邮箱或用户名不能为空")
+		return
 	}
 
 	loginRequest := &menger.LoginRequest{
@@ -111,21 +116,44 @@ func (m *MengerHandler) Login(c *gin.Context) error {
 	}
 
 	if loginRes, err = m.mengerClient.Login(context.Background(), loginRequest); err != nil {
-		log.Error("调用wm.sx.svc.menger失败", err)
-		return mygin.ServerError()
+		log.Error("登录失败", err)
+		c.String(http.StatusInternalServerError, "服务器异常")
+		return
 	}
 	if loginRes.ErrorMsg != nil {
-		return mygin.LogicError(loginRes.ErrorMsg.Msg)
+		c.String(http.StatusBadRequest, loginRes.ErrorMsg.Msg)
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"token":      loginRes.Token,
-		"mengerInfo": loginRes.MengerInfo,
-	})
-	return nil
+	if s, err = mygin.NewSession(c); err != nil {
+		log.Error("获取session失败 err: ", err)
+		c.String(http.StatusInternalServerError, "服务器异常")
+		return
+	}
+	s.SaveMenger(loginRes.MengerInfo.MengerId, loginRes.MengerInfo.Name)
+	if err = s.Save(); err != nil {
+		log.Error("保存session失败", err)
+		c.String(http.StatusInternalServerError, "服务器异常")
+		return
+	}
+	c.JSON(http.StatusOK, loginRes.MengerInfo)
+	return
 }
 
-func (m *MengerHandler) Logout(c *gin.Context) error {
-
-	return nil
+func (m *MengerHandler) Logout(c *gin.Context) {
+	var (
+		err error
+		s   *mygin.Session
+	)
+	if s, err = mygin.NewSession(c); err != nil {
+		log.Error("获取session失败 err: ", err)
+		c.String(http.StatusInternalServerError, "服务器异常")
+		return
+	}
+	if err = s.Remove(); err != nil {
+		log.Error("保存session失败", err)
+		c.String(http.StatusInternalServerError, "服务器异常")
+		return
+	}
+	return
 }
