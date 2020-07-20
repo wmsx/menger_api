@@ -5,6 +5,7 @@ services:
     image: menger-api:latest
     restart: always
     environment:
+      RUN_ENV: prod
       MICRO_REGISTRY: etcd
       MICRO_REGISTRY_ADDRESS: sx-etcd-node1:2379,sx-etcd-node2:2379,sx-etcd-node3:2379
     networks:

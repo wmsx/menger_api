@@ -10,8 +10,6 @@ import (
 	"net/http"
 )
 
-const mengerSvcName = "wm.sx.svc.menger"
-
 type LoginInfo struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
