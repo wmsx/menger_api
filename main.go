@@ -17,9 +17,9 @@ func main() {
 		web.Name(name),
 		web.Flags(
 			&cli.StringFlag{
-				Name:    "env",
-				Usage:   "指定运行环境",
-				Value:   "dev",
+				Name:   "env",
+				Usage:  "指定运行环境",
+				Value:  "dev",
 				EnvVars: []string{"RUN_ENV"},
 			},
 		),

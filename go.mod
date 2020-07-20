@@ -2,14 +2,18 @@ module github.com/wmsx/menger_api
 
 go 1.14
 
+//  替换为v1.26.0版本的gRPC库
+replace (
+	github.com/wmsx/menger_svc => /Users/zengqiang96/codespace/sx/menger_svc
+	github.com/wmsx/xconf => /Users/zengqiang96/codespace/xconf
+	google.golang.org/grpc => google.golang.org/grpc v1.26.0
+)
+
 require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/micro/cli/v2 v2.1.2
-	github.com/micro/go-micro/v2 v2.9.1
-	github.com/wmsx/menger_svc v0.0.0-20200720105758-ea97af9f3c81
+	github.com/micro/go-micro/v2 v2.5.0
+	github.com/wmsx/menger_svc v0.0.0-00010101000000-000000000000
 	github.com/wmsx/pkg v0.0.0-20200720153510-e000d75295a3
-	github.com/wmsx/xconf v0.0.0-20200710193800-f97c7e3c9e84
+	github.com/wmsx/xconf v0.0.0-20200720194624-34a4108a8759
 )
-
-//  替换为v1.26.0版本的gRPC库
-replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
