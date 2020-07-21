@@ -5,9 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/util/log"
-	menger "github.com/wmsx/menger_svc/proto/menger"
+	mengerProto "github.com/wmsx/menger_svc/proto/menger"
 	mygin "github.com/wmsx/pkg/gin"
 	"net/http"
+	"strconv"
 )
 
 type LoginInfo struct {
@@ -24,30 +25,32 @@ type RegisterInfo struct {
 }
 
 type MengerHandler struct {
-	mengerClient menger.MengerService
+	mengerClient mengerProto.MengerService
 }
 
 func NewMengerHandler(client client.Client) *MengerHandler {
 	return &MengerHandler{
-		mengerClient: menger.NewMengerService(mengerSvcName, client),
+		mengerClient: mengerProto.NewMengerService(mengerSvcName, client),
 	}
 }
 
 func (m *MengerHandler) Register(c *gin.Context) {
 	var (
-		registerRes  *menger.RegisterResponse
-		loginRes     *menger.LoginResponse
+		registerRes  *mengerProto.RegisterResponse
+		loginRes     *mengerProto.LoginResponse
 		err          error
 		registerInfo RegisterInfo
 	)
 
+	app := mygin.Gin{C: c}
+
 	if err = c.ShouldBindJSON(&registerInfo); err != nil {
 		log.Error("参数校验失败", err)
-		c.String(http.StatusBadRequest, "参数不完善")
+		app.LogicErrorResponse("参数不完善")
 		return
 	}
 
-	registerRequest := &menger.RegisterRequest{
+	registerRequest := &mengerProto.RegisterRequest{
 		Name:     registerInfo.Name,
 		Email:    registerInfo.Email,
 		Password: registerInfo.Password,
@@ -57,7 +60,7 @@ func (m *MengerHandler) Register(c *gin.Context) {
 	cxt := context.Background()
 	if registerRes, err = m.mengerClient.Register(cxt, registerRequest); err != nil {
 		log.Error("注册失败", err)
-		c.String(http.StatusInternalServerError, "服务器异常")
+		app.ServerErrorResponse()
 		return
 	}
 	if registerRes.ErrorMsg != nil {
@@ -65,9 +68,9 @@ func (m *MengerHandler) Register(c *gin.Context) {
 		return
 	}
 
-	log.Info("注册成功", registerRequest)
+	log.Info("注册成功", registerRes)
 
-	loginReq := &menger.LoginRequest{
+	loginReq := &mengerProto.LoginRequest{
 		Name:     registerInfo.Name,
 		Email:    registerInfo.Email,
 		Password: registerInfo.Password,
@@ -76,38 +79,39 @@ func (m *MengerHandler) Register(c *gin.Context) {
 	loginRes, err = m.mengerClient.Login(cxt, loginReq)
 	if err != nil {
 		log.Error("自动登陆失败 err:", err)
-		c.String(http.StatusUnauthorized, "自动登陆失败")
+		app.LogicErrorResponse("自动登陆失败")
 		return
 	}
 	if loginRes.ErrorMsg != nil {
 		log.Error("自动登陆失败 errorMsg: ", loginRes.ErrorMsg)
-		c.String(http.StatusUnauthorized, "自动登陆失败")
+		app.LogicErrorResponse("自动登陆失败")
 		return
 	}
 
-	c.JSON(http.StatusOK, loginRes.MengerInfo)
+	app.Response(loginRes.MengerInfo)
 	return
 }
 
 func (m *MengerHandler) Login(c *gin.Context) {
 	var (
-		loginRes  *menger.LoginResponse
+		loginRes  *mengerProto.LoginResponse
 		err       error
 		loginInfo *LoginInfo
 		s         *mygin.Session
 	)
+	app := mygin.Gin{C: c}
 
 	if err = c.ShouldBindJSON(&loginInfo); err != nil {
 		log.Error("参数校验失败", err)
-		c.String(http.StatusBadRequest, "参数不完善")
+		app.LogicErrorResponse("参数不完善")
 		return
 	}
 	if loginInfo.Name == "" && loginInfo.Email == "" {
-		c.String(http.StatusBadRequest, "邮箱或用户名不能为空")
+		app.LogicErrorResponse("邮箱或用户名不能为空")
 		return
 	}
 
-	loginRequest := &menger.LoginRequest{
+	loginRequest := &mengerProto.LoginRequest{
 		Email:    loginInfo.Email,
 		Name:     loginInfo.Name,
 		Password: loginInfo.Password,
@@ -115,26 +119,26 @@ func (m *MengerHandler) Login(c *gin.Context) {
 
 	if loginRes, err = m.mengerClient.Login(context.Background(), loginRequest); err != nil {
 		log.Error("登录失败", err)
-		c.String(http.StatusInternalServerError, "服务器异常")
+		app.ServerErrorResponse()
 		return
 	}
 	if loginRes.ErrorMsg != nil {
-		c.String(http.StatusBadRequest, loginRes.ErrorMsg.Msg)
+		app.LogicErrorResponse(loginRes.ErrorMsg.Msg)
 		return
 	}
 
 	if s, err = mygin.NewSession(c); err != nil {
 		log.Error("获取session失败 err: ", err)
-		c.String(http.StatusInternalServerError, "服务器异常")
+		app.ServerErrorResponse()
 		return
 	}
-	s.SaveMenger(loginRes.MengerInfo.MengerId, loginRes.MengerInfo.Name)
+	s.SaveMenger(loginRes.MengerInfo.Id, loginRes.MengerInfo.Name)
 	if err = s.Save(); err != nil {
 		log.Error("保存session失败", err)
-		c.String(http.StatusInternalServerError, "服务器异常")
+		app.ServerErrorResponse()
 		return
 	}
-	c.JSON(http.StatusOK, loginRes.MengerInfo)
+	app.Response(loginRes.MengerInfo)
 	return
 }
 
@@ -143,15 +147,40 @@ func (m *MengerHandler) Logout(c *gin.Context) {
 		err error
 		s   *mygin.Session
 	)
+	app := mygin.Gin{C: c}
 	if s, err = mygin.NewSession(c); err != nil {
 		log.Error("获取session失败 err: ", err)
-		c.String(http.StatusInternalServerError, "服务器异常")
+		app.ServerErrorResponse()
 		return
 	}
 	if err = s.Remove(); err != nil {
 		log.Error("保存session失败", err)
-		c.String(http.StatusInternalServerError, "服务器异常")
+		app.ServerErrorResponse()
 		return
 	}
+	app.Response(nil)
+	return
+}
+
+func (h *MengerHandler) GetMengerInfo(c *gin.Context) {
+	var (
+		mengerId     int64
+		err          error
+		getMengerRes *mengerProto.GetMengerResponse
+	)
+	app := mygin.Gin{C: c}
+
+	if mengerId, err = strconv.ParseInt(c.Param("id"), 10, 64); err != nil {
+		app.ServerErrorResponse()
+		return
+	}
+
+	getMengerRequest := &mengerProto.GetMengerRequest{MengerId: mengerId}
+	if getMengerRes, err = h.mengerClient.GetMenger(c, getMengerRequest); err != nil {
+		log.Error("GetMenger 获取用户信息失败 err: ", err)
+		app.ServerErrorResponse()
+		return
+	}
+	app.Response(getMengerRes.MengerInfo)
 	return
 }

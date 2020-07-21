@@ -21,6 +21,7 @@ func InitRouter(c client.Client) *gin.Engine {
 	mengerRouter.POST("/register", mengerHandler.Register)
 	mengerRouter.POST("/login", mengerHandler.Login)
 	mengerRouter.POST("/logout", mygin.AuthWrapper(mengerHandler.Logout))
+	mengerRouter.GET("/:id",  mengerHandler.GetMengerInfo)
 
 	return r
 }
