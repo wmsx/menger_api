@@ -526,8 +526,6 @@ github.com/micro/go-micro v1.16.0/go.mod h1:A0F58bHLh2m0LAI9QyhvmbN8c1cxhAZo3cM6
 github.com/micro/go-micro v1.18.0 h1:gP70EZVHpJuUIT0YWth192JmlIci+qMOEByHm83XE9E=
 github.com/micro/go-micro v1.18.0/go.mod h1:klwUJL1gkdY1MHFyz+fFJXn52dKcty4hoe95Mp571AA=
 github.com/micro/go-micro/v2 v2.4.0/go.mod h1:lYuHYFPjY3QE9fdiy3F2awXcsXTdB68AwoY3RQ3dPN4=
-github.com/micro/go-micro/v2 v2.5.0 h1:FB+fizQiI/TgTyInK8m+SmIdwQXD3ZmhUF7zClpr6r8=
-github.com/micro/go-micro/v2 v2.5.0/go.mod h1:qz2UT4UFdFVs+qUGMuDK3xuHgude1BgntqQ29sbpPlE=
 github.com/micro/go-micro/v2 v2.9.1 h1:+S9koIrNWARjpP6k2TZ7kt0uC9zUJtNXzIdZTZRms7Q=
 github.com/micro/go-micro/v2 v2.9.1/go.mod h1:x55ZM3Puy0FyvvkR3e0ha0xsE9DFwfPSUMWAIbFY0SY=
 github.com/micro/go-plugins v1.5.1/go.mod h1:jcxejzJCAMH731cQHbS/hncyKe0rxAbzKkibj8glad4=
@@ -753,9 +751,8 @@ github.com/wmsx/menger_svc v0.0.0-20200720105758-ea97af9f3c81 h1:XR+W+kQgDGVJoAV
 github.com/wmsx/menger_svc v0.0.0-20200720105758-ea97af9f3c81/go.mod h1:Li/hEoZaUQDkW+xbDgt92TdKmM1xYFGoaUps+iWzcJ0=
 github.com/wmsx/pkg v0.0.0-20200720153510-e000d75295a3 h1:acRX2yD44yqtYjTv6lc0vAar7Hms/j08VvrFrNmjvlU=
 github.com/wmsx/pkg v0.0.0-20200720153510-e000d75295a3/go.mod h1:7lkZ+0GLPxFMOo84rWt3ytf9EpPxrtOJVcE6k7YnLQ8=
+github.com/wmsx/xconf v0.0.0-20200710193800-f97c7e3c9e84 h1:ZW9gBd4qnUiRwpgxZCOsjrSEv7fRT0jQdM/UboqvINE=
 github.com/wmsx/xconf v0.0.0-20200710193800-f97c7e3c9e84/go.mod h1:k3qzr9U26NlybCSY5hxV2yhbjvh2DxuWW/vBn5zaos8=
-github.com/wmsx/xconf v0.0.0-20200720191742-093ff424313e h1:9m8NLm+bxy176kF+Ur/D+5N4L5FzHZDKo6LVN2oNORI=
-github.com/wmsx/xconf v0.0.0-20200720191742-093ff424313e/go.mod h1:Eyy9YKMqTa4y2RjO4bAH6YUSI7r6kEEI2I5atX+6hjQ=
 github.com/xanzy/ssh-agent v0.2.1 h1:TCbipTQL2JiiCprBWx9frJ2eJlCYT00NmctrHxVAr70=
 github.com/xanzy/ssh-agent v0.2.1/go.mod h1:mLlQY/MoOhWBj+gOGMQkOeiEvkx+8pJSI+0Bx9h2kr4=
 github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhemzwFU4jHLhdvlE6uDZjXFejJXr49I=
