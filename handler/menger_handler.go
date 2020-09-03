@@ -12,14 +12,12 @@ import (
 )
 
 type LoginInfo struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
+	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 type RegisterInfo struct {
 	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 	Avatar   string `json:"avatar"`
 }
@@ -52,7 +50,6 @@ func (m *MengerHandler) Register(c *gin.Context) {
 
 	registerRequest := &mengerProto.RegisterRequest{
 		Name:     registerInfo.Name,
-		Email:    registerInfo.Email,
 		Password: registerInfo.Password,
 		Avatar:   registerInfo.Avatar,
 	}
@@ -72,7 +69,6 @@ func (m *MengerHandler) Register(c *gin.Context) {
 
 	loginReq := &mengerProto.LoginRequest{
 		Name:     registerInfo.Name,
-		Email:    registerInfo.Email,
 		Password: registerInfo.Password,
 	}
 
@@ -106,14 +102,13 @@ func (m *MengerHandler) Login(c *gin.Context) {
 		app.LogicErrorResponse("参数不完善")
 		return
 	}
-	if loginInfo.Name == "" && loginInfo.Email == "" {
-		app.LogicErrorResponse("邮箱或用户名不能为空")
+	if loginInfo.Username == "" {
+		app.LogicErrorResponse("用户名不能为空")
 		return
 	}
 
 	loginRequest := &mengerProto.LoginRequest{
-		Email:    loginInfo.Email,
-		Name:     loginInfo.Name,
+		Name:     loginInfo.Username,
 		Password: loginInfo.Password,
 	}
 
