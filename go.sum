@@ -464,8 +464,8 @@ github.com/urfave/cli v1.22.1/go.mod h1:Gos4lmkARVdJ6EkW0WaNv/tZAAMe9V7XWyB60NtX
 github.com/vultr/govultr v0.1.4/go.mod h1:9H008Uxr/C4vFNGLqKx232C206GL0PBHzOP0809bGNA=
 github.com/wmsx/menger_svc v0.0.0-20200903171825-192703a70f26 h1:+rT9vBie5Xd+3pMQmhKC+F2VTrD4gPk3tJ9kQ02zfeU=
 github.com/wmsx/menger_svc v0.0.0-20200903171825-192703a70f26/go.mod h1:XBZ9eYgNAU+KEwyclcSySnTxQAuKiaougZS1BKJT/9A=
-github.com/wmsx/pkg v0.0.0-20200721130733-b58e04221bd2 h1:1aOYAnawUWs5r0OFUvK52bWTnmAE9z/21V2IZ8iHBmk=
-github.com/wmsx/pkg v0.0.0-20200721130733-b58e04221bd2/go.mod h1:7lkZ+0GLPxFMOo84rWt3ytf9EpPxrtOJVcE6k7YnLQ8=
+github.com/wmsx/pkg v0.0.0-20200904021022-408f63d890ad h1:HlA2V1ETh+A6fy/+ETImQFZc8ytfH2Y2LhdaZHMJ/x8=
+github.com/wmsx/pkg v0.0.0-20200904021022-408f63d890ad/go.mod h1:7lkZ+0GLPxFMOo84rWt3ytf9EpPxrtOJVcE6k7YnLQ8=
 github.com/wmsx/xconf v0.0.0-20200720194624-34a4108a8759 h1:mpqcVTZI9BwTNb8bN3PkuxuRxQlf5W84la1Q1Z8QGUY=
 github.com/wmsx/xconf v0.0.0-20200720194624-34a4108a8759/go.mod h1:Eyy9YKMqTa4y2RjO4bAH6YUSI7r6kEEI2I5atX+6hjQ=
 github.com/xanzy/ssh-agent v0.2.1 h1:TCbipTQL2JiiCprBWx9frJ2eJlCYT00NmctrHxVAr70=
