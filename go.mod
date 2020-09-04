@@ -12,6 +12,6 @@ require (
 	github.com/micro/cli/v2 v2.1.2
 	github.com/micro/go-micro/v2 v2.5.0
 	github.com/wmsx/menger_svc v0.0.0-20200903171825-192703a70f26
-	github.com/wmsx/pkg v0.0.0-20200904021022-408f63d890ad
+	github.com/wmsx/pkg v0.0.0-20200904032714-e9c2f482fcbc
 	github.com/wmsx/xconf v0.0.0-20200720194624-34a4108a8759
 )
